@@ -17,7 +17,16 @@ services**.
 * Set the environment variable STAGING to "no" if you want to have
   proper certificates - this is to prevent you from asking the real
   letsencrypt service accidently by default
-* ungleich-certbot gets your certificate
+* By default the container allows world read access to the
+  certificates, so that non-root users can access the certificates.
+  Set the LEAVE_PERMISSIONS_AS_IS environment variable to instruct the
+  container not to change permissions
+
+```
+docker run -e DOMAIN=example.com \
+           -e EMAIL=root@example.com \
+              ungleich/ungleich-certbot
+```
 
 ## Volumes
 

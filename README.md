@@ -28,6 +28,12 @@ docker run -e DOMAIN=example.com \
               ungleich/ungleich-certbot
 ```
 
+### Exiting after getting the certificate
+
+By default, the container will stay alive and try to renew the
+certificate every 86400 seconds. If you set the environment variable
+`ONLYGETCERT`, then it will only get the certificates and exit.
+
 ## Volumes
 
 If you want to keep / use your certificates, you are advised to create
@@ -35,4 +41,4 @@ a volume below /etc/letsencrypt.
 
 ## Kubernetes
 
-Sample kubernetes usage: (TBD)
+See https://code.ungleich.ch/ungleich-public/ungleich-k8s/.

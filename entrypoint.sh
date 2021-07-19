@@ -26,6 +26,10 @@ while [ ! -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" ]; do
     fi
 done
 
+if [ "$ONLYGETCERT" ]; then
+    exit 0
+fi
+
 # Try to renew once per day
 while true; do
     /usr/bin/certbot renew

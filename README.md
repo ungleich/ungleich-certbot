@@ -34,6 +34,16 @@ By default, the container will stay alive and try to renew the
 certificate every 86400 seconds. If you set the environment variable
 `ONLYGETCERT`, then it will only get the certificates and exit.
 
+### Only renewing the certificate
+
+If you only want to trigger renewing existing certificates and skip
+getting the certificates initially, you can set the variable
+`RENEWCERTSONCE`, then it will only renew all certificates and exit.
+
+* If `ONLYRENEWCERTS` is set, only the reguler renew loop will run.
+* If `ONLYRENEWCERTSONCE` is set, renew will be run once and then the
+  container exits
+
 ## Volumes
 
 If you want to keep / use your certificates, you are advised to create

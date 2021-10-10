@@ -21,12 +21,29 @@ services**.
   certificates, so that non-root users can access the certificates.
   Set the LEAVE_PERMISSIONS_AS_IS environment variable to instruct the
   container not to change permissions
+* If you setup the variable NGINX to any value, the container will
+  start nginx and reload after trying to renew the certificate
 
 ```
 docker run -e DOMAIN=example.com \
            -e EMAIL=root@example.com \
               ungleich/ungleich-certbot
 ```
+
+### Nginx support
+
+Using
+
+```
+docker run -e DOMAIN=example.com \
+           -e EMAIL=root@example.com \
+           -e NGINX=yes \
+           -e STAGING=no \
+              ungleich/ungleich-certbot
+```
+
+you will get a proper, real world usable nginx server. Inject the
+nginx configuration by meains of a volume to /etc/nginx/conf.d
 
 ### Exiting after getting the certificate
 

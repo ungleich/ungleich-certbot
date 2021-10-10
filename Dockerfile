@@ -1,4 +1,4 @@
-FROM alpine:3.14
+FROM nginx:1.21.3-alpine
 
 RUN apk update
 RUN apk add certbot

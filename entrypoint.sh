@@ -33,6 +33,12 @@ if [ "$ONLYGETCERT" ]; then
     exit 0
 fi
 
+# Still there? Start nginx if requested
+
+if [ "$NGINX" ]; then
+    nginx
+fi
+
 # Try to renew once per day
 while true; do
     /usr/bin/certbot renew
@@ -45,6 +51,9 @@ while true; do
     fi
 
     [ "$ONLYRENEWCERTSONCE" ] && exit 0
+
+    # reload nginx if we are running it
+    [ "$NGINX" ] && pkill -1 nginx
 
     sleep 86400
 done

@@ -5,6 +5,24 @@ if [ -z "$DOMAIN" -o -z "$EMAIL" ]; then
     exit 1
 fi
 
+# Check that the domain exists, if not wait for it
+ipv6_addr=""
+ipv4_addr=""
+
+while [ -z "$ipv6_addr" -a -z "$ipv4_addr"  ]; do
+    echo "Trying to resolve $DOMAIN via DNS ..."
+    # Resolve for IPv6 and for IPv6
+    ipv6_addr=$(dig +short "$DOMAIN" aaaa)
+    ipv4_addr=$(dig +short "$DOMAIN" a)
+
+    if [ -z -z "$ipv6_addr" -a -z "$ipv4_addr" ]; then
+        echo "Resolving $DOMAIN failed, waiting 5 seconds before retrying ..."
+        sleep 5
+    else
+        echo "Resolved domain $DOMAIN: ipv6: $ipv6_addr ipv4: $ipv4_addr"
+    fi
+done
+
 if [ "$STAGING" = no ]; then
     STAGING=""
 else

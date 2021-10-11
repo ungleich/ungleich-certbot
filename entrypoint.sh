@@ -15,11 +15,11 @@ while [ -z "$ipv6_addr" -a -z "$ipv4_addr"  ]; do
     ipv6_addr=$(dig +short "$DOMAIN" aaaa)
     ipv4_addr=$(dig +short "$DOMAIN" a)
 
-    if [ -z -z "$ipv6_addr" -a -z "$ipv4_addr" ]; then
+    if [ "$ipv6_addr" -o "$ipv4_addr" ]; then
+        echo "Resolved domain $DOMAIN: ipv6: $ipv6_addr ipv4: $ipv4_addr"
+    else
         echo "Resolving $DOMAIN failed, waiting 5 seconds before retrying ..."
         sleep 5
-    else
-        echo "Resolved domain $DOMAIN: ipv6: $ipv6_addr ipv4: $ipv4_addr"
     fi
 done
 

@@ -66,6 +66,12 @@ getting the certificates initially, you can set the variable
 If you want to keep / use your certificates, you are advised to create
 a volume below /etc/letsencrypt.
 
+## Changelog
+
+* 0.1.0: usable with automatic renewal
+* 0.2.0: added support for nginx webserver (based on official nginx
+  image)
+
 ## Kubernetes
 
 See https://code.ungleich.ch/ungleich-public/ungleich-k8s/.

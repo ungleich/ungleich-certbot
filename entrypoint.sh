@@ -36,7 +36,11 @@ if [ -z "$ONLYRENEWCERTS" -a -z "$ONLYRENEWCERTSONCE" ]; then
         certbot certonly --agree-tos --cert-name "${DOMAIN}" \
                 --email "$EMAIL" --expand --non-interactive \
                 --domain "$DOMAIN" --standalone $STAGING
-        sleep 30
+
+        # If it failed, sleep before next try
+        if [ ! -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" ]; then
+            sleep 30
+        fi
 
         # Correct permissions for multi user container/pod deployments
         # if not indicated otherwise

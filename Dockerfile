@@ -1,6 +1,6 @@
-FROM nginx:1.21.3-alpine
+FROM nginx:1.21.4-alpine
 
 RUN apk update && apk add certbot bind-tools
 
-COPY entrypoint.sh /
+COPY entrypoint.sh nginx-http-redir.conf /
 CMD ["/entrypoint.sh"]

@@ -23,6 +23,10 @@ services**.
   container not to change permissions
 * If you setup the variable NGINX to any value, the container will
   start nginx and reload after trying to renew the certificate
+* If you set the variable NGINX_HTTP_REDIRECT, the container will
+  enable automatic redirect of http to https with the exception of the
+  path /.well-known/acme-challenge/
+
 
 ```
 docker run -e DOMAIN=example.com \
@@ -44,6 +48,22 @@ docker run -e DOMAIN=example.com \
 
 you will get a proper, real world usable nginx server. Inject the
 nginx configuration by meains of a volume to /etc/nginx/conf.d
+
+### Nginx HTTP redirect support
+
+Using
+
+```
+docker run -e DOMAIN=example.com \
+           -e EMAIL=root@example.com \
+           -e NGINX=yes \
+           -e NGINX_HTTP_REDIRECT=yes \
+           -e STAGING=no \
+              ungleich/ungleich-certbot
+```
+
+the container will listen on port 80 and redirect the traffic to port
+443 (https).
 
 ### Exiting after getting the certificate
 

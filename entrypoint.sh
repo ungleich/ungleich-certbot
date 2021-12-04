@@ -58,13 +58,20 @@ fi
 # Still there? Start nginx if requested
 
 if [ "$NGINX" ]; then
+
+    if [ "$NGINX_HTTP_REDIRECT" ]; then
+        cp /nginx-http-redir.conf /etc/nginx/conf.d
+    fi
     nginx
 fi
 
 # Try to renew once per day
 while true; do
-    /usr/bin/certbot renew
-
+    if [ "$NGINX_HTTP_REDIRECT" ]; then
+        /usr/bin/certbot renew --webroot --webroot-path /var/www/html
+    else
+        /usr/bin/certbot renew
+    fi
 
     # And again, correct permissions if not told otherwise
     if [ -z "$LEAVE_PERMISSIONS_AS_IS" ]; then

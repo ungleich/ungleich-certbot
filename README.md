@@ -7,6 +7,8 @@ The assumption is that you can point the DNS name to the container
 from outside. This is by default given for **IPv6 only kubernetes
 services**.
 
+The source of this image can be found on
+[code.ungleich.ch](https://code.ungleich.ch/ungleich-public/ungleich-certbot).
 
 ## Usage
 
@@ -21,65 +23,50 @@ services**.
   certificates, so that non-root users can access the certificates.
   Set the LEAVE_PERMISSIONS_AS_IS environment variable to instruct the
   container not to change permissions
-* If you setup the variable NGINX to any value, the container will
-  start nginx and reload after trying to renew the certificate
-* If you set the variable NGINX_HTTP_REDIRECT, the container will
-  enable automatic redirect of http to https with the exception of the
-  path /.well-known/acme-challenge/
+* If you setup the variable NO_NGINX to any value, the container will
+  NOT start nginx and use certbot in standalone mode
 
 
 ```
 docker run -e DOMAIN=example.com \
            -e EMAIL=root@example.com \
-              ungleich/ungleich-certbot
+              ungleich/ungleich-certbot:1.0.0
 ```
 
-### Nginx support
+### Production certificate
 
-Using
+Use
 
 ```
 docker run -e DOMAIN=example.com \
            -e EMAIL=root@example.com \
-           -e NGINX=yes \
            -e STAGING=no \
-              ungleich/ungleich-certbot
+              ungleich/ungleich-certbot:1.0.0
 ```
 
 you will get a proper, real world usable nginx server. Inject the
 nginx configuration by meains of a volume to /etc/nginx/conf.d
 
-### Nginx HTTP redirect support
-
-Using
-
-```
-docker run -e DOMAIN=example.com \
-           -e EMAIL=root@example.com \
-           -e NGINX=yes \
-           -e NGINX_HTTP_REDIRECT=yes \
-           -e STAGING=no \
-              ungleich/ungleich-certbot
-```
-
-the container will listen on port 80 and redirect the traffic to port
-443 (https).
-
 ### Exiting after getting the certificate
 
 By default, the container will stay alive and try to renew the
-certificate every 86400 seconds. If you set the environment variable
+certificate every day. If you set the environment variable
 `ONLYGETCERT`, then it will only get the certificates and exit.
 
-### Only renewing the certificate
+This mode can be used
+as a [kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/).
+
+### Only renewing the certificate once
 
 If you only want to trigger renewing existing certificates and skip
 getting the certificates initially, you can set the variable
 `RENEWCERTSONCE`, then it will only renew all certificates and exit.
 
-* If `ONLYRENEWCERTS` is set, only the reguler renew loop will run.
 * If `ONLYRENEWCERTSONCE` is set, renew will be run once and then the
   container exits
+
+This mode can be used
+as a [kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/).
 
 ## Volumes
 
@@ -88,9 +75,30 @@ a volume below /etc/letsencrypt.
 
 ## Changelog
 
-* 0.1.0: usable with automatic renewal
-* 0.2.0: added support for nginx webserver (based on official nginx
-  image)
+### 0.1.0
+
+
+Usable with automatic renewal
+
+### 0.2.0
+
+Added support for nginx webserver, based on official nginx image
+
+### 1.0.0
+
+- Start nginx in foreground, if not opted out
+  - Nicely shows erros of nginx starting, which is what we need
+- Starting nginx by default on port 80
+- Removed variable NGINX to start nginx
+- Introducted variable NO_NGINX to prevent nginx from starting
+- Changed the wait time for domain resolution test to every 2 seconds
+  - helps to startup faster
+- Added directory /nginx from which configuration files are sourced
+  - can be used to overwrite built-in configurations
+- Create file /tmp/last_renew for checking when
+- Dropped support for NGINX_HTTP_REDIRECT (always enabled with nginx
+  now) -- can be overwritten by overriding /nginx directory
+- Dropped support for ONLYRENEWCERTS - this is covered by NO_NGINX already
 
 ## Kubernetes
 

@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 if [ -z "$DOMAIN" -o -z "$EMAIL" ]; then
     echo Missing DOMAIN or EMAIL parameter - aborting. >&2
     exit 1
@@ -18,8 +19,8 @@ while [ -z "$ipv6_addr" -a -z "$ipv4_addr"  ]; do
     if [ "$ipv6_addr" -o "$ipv4_addr" ]; then
         echo "Resolved domain $DOMAIN: ipv6: $ipv6_addr ipv4: $ipv4_addr"
     else
-        echo "Resolving $DOMAIN failed, waiting 5 seconds before retrying ..."
-        sleep 5
+        echo "Resolving $DOMAIN failed, waiting 2 seconds before retrying ..."
+        sleep 2
     fi
 done
 
@@ -55,34 +56,16 @@ if [ "$ONLYGETCERT" ]; then
     exit 0
 fi
 
-# Still there? Start nginx if requested
+# Before starting nginx, try to renew to ensure we are up-to-date
+# This is necessary for container restarts not to delay a needed renew
+/usr/bin/certbot renew --standalone
 
-if [ "$NGINX" ]; then
+# If it requested to renew once only we are done here
+[ "$ONLYRENEWCERTSONCE" ] && exit 0
 
-    if [ "$NGINX_HTTP_REDIRECT" ]; then
-        cp /nginx-http-redir.conf /etc/nginx/conf.d
-    fi
-    nginx
+if [ "$NO_NGINX" ]; then
+    sleep infinity
+else
+    cp /nginx/* /etc/nginx/conf.d
+    nginx -g "daemon off;"
 fi
-
-# Try to renew once per day
-while true; do
-    if [ "$NGINX_HTTP_REDIRECT" ]; then
-        /usr/bin/certbot renew --webroot --webroot-path /var/www/html
-    else
-        /usr/bin/certbot renew
-    fi
-
-    # And again, correct permissions if not told otherwise
-    if [ -z "$LEAVE_PERMISSIONS_AS_IS" ]; then
-        find /etc/letsencrypt -type d -exec chmod 0755 {} \;
-        find /etc/letsencrypt -type f -exec chmod 0644 {} \;
-    fi
-
-    [ "$ONLYRENEWCERTSONCE" ] && exit 0
-
-    # reload nginx if we are running it
-    [ "$NGINX" ] && pkill -1 nginx
-
-    sleep 86400
-done

@@ -30,7 +30,7 @@ The source of this image can be found on
 ```
 docker run -e DOMAIN=example.com \
            -e EMAIL=root@example.com \
-              ungleich/ungleich-certbot:1.0.0
+              ungleich/ungleich-certbot:1.1.1
 ```
 
 ### Production certificate
@@ -41,11 +41,27 @@ Use
 docker run -e DOMAIN=example.com \
            -e EMAIL=root@example.com \
            -e STAGING=no \
-              ungleich/ungleich-certbot:1.0.0
+              ungleich/ungleich-certbot:1.1.1
 ```
 
 you will get a proper, real world usable nginx server. Inject the
 nginx configuration by meains of a volume to /etc/nginx/conf.d
+
+### Adding or overriding nginx configurations
+
+To add your own nginx configurations, create the directory
+/nginx-configs and add your configurations in there:
+
+```
+docker run -e DOMAIN=example.com \
+           -e EMAIL=root@example.com \
+           -v /path/to/config:/nginx-configs \
+              ungleich/ungleich-certbot:1.1.1
+```
+
+By default this image is deploying the *default.conf*. If you want to
+override the default image nginx configuration, you can supply your
+own default.conf.
 
 ### Exiting after getting the certificate
 
@@ -99,6 +115,15 @@ Added support for nginx webserver, based on official nginx image
 - Dropped support for NGINX_HTTP_REDIRECT (always enabled with nginx
   now) -- can be overwritten by overriding /nginx directory
 - Dropped support for ONLYRENEWCERTS - this is covered by NO_NGINX already
+
+### 1.1.0
+
+- Allow better way to inject configurations
+
+### 1.1.1
+
+- Fix incorrect configuration sourcing
+
 
 ## Kubernetes
 

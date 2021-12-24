@@ -66,6 +66,13 @@ fi
 if [ "$NO_NGINX" ]; then
     sleep infinity
 else
+    # First builtin
     cp /nginx/* /etc/nginx/conf.d
+
+    # Then user provided
+    if [ -d /nginx-configs ]; then
+        cp /nginx-configs/* /etc/nginx/conf.d
+    fi
+
     nginx -g "daemon off;"
 fi

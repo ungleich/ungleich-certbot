@@ -128,6 +128,9 @@ Added support for nginx webserver, based on official nginx image
 
 - Add missing crond invocation
 
+### 1.1.3
+
+- Add missing http directory
 
 ## Kubernetes
 

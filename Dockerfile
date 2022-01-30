@@ -1,6 +1,6 @@
 FROM nginx:1.21.4-alpine
 
-RUN mkdir -p /nginx
+RUN mkdir -p /nginx /www_http
 COPY nginx-http-redir.conf /nginx/default.conf
 
 # For renewing the certificates

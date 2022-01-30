@@ -63,6 +63,9 @@ fi
 # If it requested to renew once only we are done here
 [ "$ONLYRENEWCERTSONCE" ] && exit 0
 
+# Start cron for automatic certificate renewal
+crond
+
 if [ "$NO_NGINX" ]; then
     sleep infinity
 else

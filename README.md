@@ -124,6 +124,10 @@ Added support for nginx webserver, based on official nginx image
 
 - Fix incorrect configuration sourcing
 
+### 1.1.2
+
+- Add missing crond invocation
+
 
 ## Kubernetes
 
